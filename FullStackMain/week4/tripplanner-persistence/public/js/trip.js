@@ -92,6 +92,52 @@ var tripModule = (function () {
     })
   });
 
+  function addSavedDay(dayNo) {
+    console.log(dayNo)
+    $.ajax({
+      method: "GET",
+      url: `/api/restaurants-activities/${1}`,
+    })
+    .then(function(result){
+      console.log('result', result);
+      if (result.restaurants) {
+        var restaurants = result[restaurants].map(function(element){
+          attractionsModule.getEnhanced(element)
+        });
+      }
+      if (result.activities) {
+        var activities = result[activities].map(function(element) {
+          attractionModule.getEnhanced(element)
+        });
+      }
+
+      console.log('restaurants', restaurants);
+      console.log('activities', activities)
+
+      restaurants.forEach(function(restaurant){
+        restaurant.show();
+      });
+      activities.forEach(function(activity){
+        activity.show()
+      })
+
+      // FILL THIS IN LATER
+    })
+    .catch(console.error)
+
+    if (this && this.blur) this.blur(); // removes focus box from buttons
+    var newDay = dayModule.create({ number: days.length + 1 }); // dayModule
+    days.push(newDay);
+    if (days.length === 1) {
+      currentDay = newDay;
+    }
+    switchTo(newDay);
+
+  }
+
+
+
+  // }
 
   var publicAPI = {
 
@@ -110,14 +156,18 @@ var tripModule = (function () {
           })
         } else {
          for(var i = 0; i < results.length; i++){
-           addDay();
+           console.log('yo')
+          //  addDay();
+          addSavedDay(results[i]);
+
            days[i].hotel
            // i + 1 = dayNumber
            // have to go fetch all the attractions for that daynumber, assign
            // them to that dayNumber
           }
         }
-      });      // ~~~~~~~~~~~~~~~~~~~~~~~
+      }
+    );      // ~~~~~~~~~~~~~~~~~~~~~~~
         //If we are trying to load existing Days, then let's make a request to the server for the day. Remember this is async. For each day we get back what do we need to do to it?
       // ~~~~~~~~~~~~~~~~~~~~~~~
   //    $(addDay);

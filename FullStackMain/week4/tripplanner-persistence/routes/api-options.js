@@ -13,6 +13,56 @@ router.get('/hotels', function (req, res, next) {
   .catch(next)
 })
 
+router.get('/restaurants-activities/:dayNumber', function (req, res, next) {
+  console.log('restaurants and activities route worked');
+
+  var restaurants, activities;
+  var restaurantsAndActivities = {}
+  var dayNum = req.params.dayNumber;
+  Day.findOne({
+    include:
+        [{
+          model: Restaurant,
+        },
+        { model: Activity},
+        { model: Hotel}
+      ],
+
+    where: {dayNumber: dayNum}
+  })
+  .then(function(result){
+    res.json(result)
+    console.log('result', result)
+    // return result.getRestaurants()
+  })
+  .catch(console.error)
+  // .then(function(restaurantResult){
+  //   console.log('restaurantresult', restaurantResult)
+  //   restaurants = restaurantResult
+  //   restaurantsAndActivities[restaurants] = restaurants
+  //   var dayActivityPromise = Day.findOne(
+  //     {include:
+  //       [{model: 'day_activity'}]
+  //     },
+  //     {where: {
+  //       dayNumber: dayNum
+  //     }}
+  //     )
+  //   return dayActivityPromise
+  //   })
+  //   .then(function(result){
+  //     return result.getActivities()
+  //   })
+  //   .then(function(activityResult){
+  //       activities = activityResult
+  //       restaurantsAndActivities[activities] = activityResult;
+  //       res.json(restaurantsAndActivities)
+  //   })
+    // .catch(next)
+})
+
+
+
 router.post('/hotels', function( req, res, next){
   Day.findOne({
     where:{
@@ -26,6 +76,8 @@ router.post('/hotels', function( req, res, next){
   })
   .catch(next)
 })
+
+
 
 router.get('/restaurants', function (req, res, next) {
   console.log('restaurant-options route worked');

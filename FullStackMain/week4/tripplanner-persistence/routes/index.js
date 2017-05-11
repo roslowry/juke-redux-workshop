@@ -8,6 +8,7 @@ var apiRouter = require('./api-options')
 var daysRouter = require('./api-days')
 
 router.get('/', function(req, res, next) {
+  console.log('i arrived main route')
   Promise.all([
     Hotel.findAll(),
     Restaurant.findAll(),
