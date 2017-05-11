@@ -25,7 +25,7 @@ var dayModule = (function () {
 
   // ~~~~~~~~~~~~~~~~~~~~~~~
     // If you follow the logic of `attractionsModule.getEnhanced` (try following it!), you will note that it depends on `loadEnhanceAttractions` to have run.
-    //Note that `loadEnhancedAttractions` is already being called for you in `/public/js/options.js` and that it utilizes another method given to us by the `attractionModule` (singular). 
+    //Note that `loadEnhancedAttractions` is already being called for you in `/public/js/options.js` and that it utilizes another method given to us by the `attractionModule` (singular).
   // ~~~~~~~~~~~~~~~~~~~~~~~
   function Day (data) {
     // for brand-new days
@@ -103,12 +103,36 @@ var dayModule = (function () {
       case 'hotel':
         if (this.hotel) this.hotel.hide();
         this.hotel = attraction;
+        $.ajax({
+          method: "POST",
+          url: "/api/hotels",
+          data: {
+            id: +($(".current-day").html()),
+            hotelId:+($("#hotel-choices").val())
+          }
+        })
         break;
       case 'restaurant':
         utilsModule.pushUnique(this.restaurants, attraction);
+        $.ajax({
+          method: "POST",
+          url: "/api/restaurants",
+          data: {
+            id: +($(".current-day").html()),
+            restaurantId:+($("#restaurant-choices").val())
+          }
+        })
         break;
       case 'activity':
         utilsModule.pushUnique(this.activities, attraction);
+        $.ajax({
+        method: "POST",
+        url: "/api/activities",
+        data: {
+          id: +($(".current-day").html()),
+          activityId:+($("#activity-choices").val())
+          }
+        })
         break;
       default: console.error('bad type:', attraction);
     }

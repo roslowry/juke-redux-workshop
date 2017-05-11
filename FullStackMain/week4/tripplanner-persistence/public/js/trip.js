@@ -15,12 +15,14 @@
  * which take `attraction` objects and pass them to `currentDay`.
  */
 
+
+var days = []
 var tripModule = (function () {
+
 
   // application state
 
-  var days = [],
-      currentDay;
+      var currentDay;
 
   // jQuery selections
 
@@ -51,7 +53,7 @@ var tripModule = (function () {
   // ~~~~~~~~~~~~~~~~~~~~~~~
     // `addDay` may need to take information now that we can persist days -- we want to display what is being sent from the DB
   // ~~~~~~~~~~~~~~~~~~~~~~~
-  function addDay () { 
+  function addDay () {
     if (this && this.blur) this.blur(); // removes focus box from buttons
     var newDay = dayModule.create({ number: days.length + 1 }); // dayModule
     days.push(newDay);
@@ -80,15 +82,45 @@ var tripModule = (function () {
   }
 
   // globally accessible module methods
+  $("#day-add").on("click", function(){
+    $.ajax({
+      method: "POST",
+      url: "/api/days",
+      data: {id: days.length + 1}
+    }).then(
+    function(result){
+    })
+  });
+
 
   var publicAPI = {
 
-    load: function () {
 
-      // ~~~~~~~~~~~~~~~~~~~~~~~
+    load: function () {
+      $.ajax({
+        method: "GET",
+        url: "api/days"
+      }).then(function(results){
+        if(!results.length){
+          addDay();
+          $.ajax({
+            method: "POST",
+            url: "/api/days",
+            data: {id: 1}
+          })
+        } else {
+         for(var i = 0; i < results.length; i++){
+           addDay();
+           days[i].hotel
+           // i + 1 = dayNumber
+           // have to go fetch all the attractions for that daynumber, assign
+           // them to that dayNumber
+          }
+        }
+      });      // ~~~~~~~~~~~~~~~~~~~~~~~
         //If we are trying to load existing Days, then let's make a request to the server for the day. Remember this is async. For each day we get back what do we need to do to it?
       // ~~~~~~~~~~~~~~~~~~~~~~~
-      $(addDay);
+  //    $(addDay);
     },
 
     switchTo: switchTo,
@@ -99,8 +131,7 @@ var tripModule = (function () {
 
     removeFromCurrent: function (attraction) {
       currentDay.removeAttraction(attraction);
-    }
-
+    },
   };
 
   return publicAPI;
